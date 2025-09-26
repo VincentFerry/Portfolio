@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Repository\ProjectRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -64,7 +65,7 @@ class HomeController extends AbstractController
     }
 
     #[Route('/api/project/{id}', name: 'api_project_detail', methods: ['GET'])]
-    public function getProjectDetail(int $id, ProjectRepository $projectRepository): JsonResponse
+    public function getProjectDetail(int $id, Request $request, ProjectRepository $projectRepository): JsonResponse
     {
         $project = $projectRepository->findOneWithImages($id);
 
@@ -72,11 +73,14 @@ class HomeController extends AbstractController
             return $this->json(['error' => 'Project not found'], 404);
         }
 
+        // Get current locale
+        $locale = $request->getLocale();
+
         $images = [];
         foreach ($project->getImages() as $image) {
             $images[] = [
                 'filename' => $image->getFilename(),
-                'alt' => $image->getAlt() ?: $project->getTitle(),
+                'alt' => $image->getAlt() ?: $project->getLocalizedTitle($locale),
                 'path' => $image->getImagePath(),
                 'isPrimary' => $image->isPrimary()
             ];
@@ -86,7 +90,7 @@ class HomeController extends AbstractController
         if (empty($images)) {
             $images[] = [
                 'filename' => 'default-project.jpg',
-                'alt' => $project->getTitle(),
+                'alt' => $project->getLocalizedTitle($locale),
                 'path' => '/images/projects/default-project.jpg',
                 'isPrimary' => true
             ];
@@ -94,8 +98,8 @@ class HomeController extends AbstractController
 
         return $this->json([
             'id' => $project->getId(),
-            'title' => $project->getTitle(),
-            'description' => $project->getDescription(),
+            'title' => $project->getLocalizedTitle($locale),
+            'description' => $project->getLocalizedDescription($locale),
             'technologies' => $project->getTechnologies(),
             'githubUrl' => $project->getGithubUrl(),
             'demoUrl' => $project->getDemoUrl(),

@@ -27,6 +27,12 @@ class Project
     #[Assert\NotBlank]
     private ?string $description = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    #[Assert\Length(max: 255)]
+    private ?string $titleEn = null;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $descriptionEn = null;
 
     #[ORM\Column(type: Types::JSON)]
     private array $technologies = [];
@@ -92,6 +98,43 @@ class Project
         return $this;
     }
 
+    public function getTitleEn(): ?string
+    {
+        return $this->titleEn;
+    }
+
+    public function setTitleEn(?string $titleEn): static
+    {
+        $this->titleEn = $titleEn;
+        return $this;
+    }
+
+    public function getDescriptionEn(): ?string
+    {
+        return $this->descriptionEn;
+    }
+
+    public function setDescriptionEn(?string $descriptionEn): static
+    {
+        $this->descriptionEn = $descriptionEn;
+        return $this;
+    }
+
+    /**
+     * Get the title according to the given locale
+     */
+    public function getLocalizedTitle(string $locale = 'fr'): string
+    {
+        return $locale === 'en' && $this->titleEn ? $this->titleEn : $this->title;
+    }
+
+    /**
+     * Get the description according to the given locale
+     */
+    public function getLocalizedDescription(string $locale = 'fr'): string
+    {
+        return $locale === 'en' && $this->descriptionEn ? $this->descriptionEn : $this->description;
+    }
 
     public function getTechnologies(): array
     {

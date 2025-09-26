@@ -16,6 +16,9 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Field;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use EasyCorp\Bundle\EasyAdminBundle\Event\BeforeEntityPersistedEvent;
+use EasyCorp\Bundle\EasyAdminBundle\Event\AfterEntityPersistedEvent;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 #[IsGranted('ROLE_ADMIN')]
 class ProjectImageCrudController extends AbstractCrudController
@@ -23,6 +26,25 @@ class ProjectImageCrudController extends AbstractCrudController
     public static function getEntityFqcn(): string
     {
         return ProjectImage::class;
+    }
+
+    public function persistEntity($entityManager, $entityInstance): void
+    {
+        // Debug avant sauvegarde
+        if ($entityInstance instanceof ProjectImage) {
+            error_log("EasyAdmin: Tentative de sauvegarde ProjectImage");
+            error_log("Filename: " . ($entityInstance->getFilename() ?? 'NULL'));
+            error_log("Project: " . ($entityInstance->getProject()?->getId() ?? 'NULL'));
+            
+            // Vérifier si le fichier existe
+            if ($entityInstance->getFilename()) {
+                $filePath = __DIR__ . '/../../../public/images/projects/' . $entityInstance->getFilename();
+                error_log("Fichier existe: " . (file_exists($filePath) ? 'OUI' : 'NON'));
+                error_log("Chemin: " . $filePath);
+            }
+        }
+        
+        parent::persistEntity($entityManager, $entityInstance);
     }
 
     public function configureFields(string $pageName): iterable
@@ -36,23 +58,9 @@ class ProjectImageCrudController extends AbstractCrudController
             
             ImageField::new('filename', 'Image')
                 ->setBasePath('/images/projects/')
-                ->setUploadDir('public/images/projects/')
+                ->setUploadDir('public/images/projects')
+                ->setUploadedFileNamePattern('[uuid].[extension]')
                 ->setRequired(true)
-                ->setFormTypeOptions([
-                    'constraints' => [
-                        new \Symfony\Component\Validator\Constraints\File([
-                            'maxSize' => '2M',
-                            'mimeTypes' => [
-                                'image/jpeg',
-                                'image/jpg', 
-                                'image/png',
-                                'image/webp'
-                            ],
-                            'mimeTypesMessage' => 'Veuillez uploader une image valide (JPG, PNG, WebP)',
-                            'maxSizeMessage' => 'L\'image ne doit pas dépasser 2MB'
-                        ])
-                    ]
-                ])
                 ->setHelp('Formats acceptés: JPG, PNG, WebP | Taille max: 2MB'),
             
             TextField::new('alt', 'Texte alternatif')

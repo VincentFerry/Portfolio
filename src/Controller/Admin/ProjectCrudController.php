@@ -31,15 +31,25 @@ class ProjectCrudController extends AbstractCrudController
 
     public function configureFields(string $pageName): iterable
     {
-        return [
+        $fields = [
             IdField::new('id')->hideOnForm(),
-            TextField::new('title', 'Titre')
+            TextField::new('title', 'Titre (Français)')
                 ->setRequired(true)
-                ->setHelp('Le titre de votre projet'),
-            TextareaField::new('description', 'Description')
+                ->setHelp('Le titre de votre projet en français'),
+            TextField::new('titleEn', 'Titre (Anglais)')
+                ->setRequired(false)
+                ->setHelp('Le titre de votre projet en anglais (optionnel)')
+                ->hideOnIndex(), // Masquer sur la liste pour gagner de la place
+            TextareaField::new('description', 'Description (Français)')
                 ->setRequired(true)
                 ->setNumOfRows(4)
-                ->setHelp('Description détaillée du projet'),
+                ->setHelp('Description détaillée du projet en français')
+                ->hideOnIndex(), // Masquer sur la liste pour gagner de la place
+            TextareaField::new('descriptionEn', 'Description (Anglais)')
+                ->setRequired(false)
+                ->setNumOfRows(4)
+                ->setHelp('Description détaillée du projet en anglais (optionnel)')
+                ->hideOnIndex(), // Masquer sur la liste pour gagner de la place
             
             AssociationField::new('images', 'Images du projet')
                 ->setFormTypeOptions([
@@ -48,21 +58,26 @@ class ProjectCrudController extends AbstractCrudController
                 ->setHelp('Gérer les images de ce projet - Utilisez le menu "Images des Projets" pour ajouter/modifier les images')
                 ->hideOnForm(),
             ArrayField::new('technologies', 'Technologies')
-                ->setHelp('Liste des technologies utilisées (ex: PHP, Symfony, JavaScript)'),
+                ->setHelp('Liste des technologies utilisées (ex: PHP, Symfony, JavaScript)')
+                ->hideOnIndex(), // Masquer sur la liste pour gagner de la place
             UrlField::new('githubUrl', 'URL GitHub')
-                ->setHelp('Lien vers le repository GitHub (optionnel)'),
+                ->setHelp('Lien vers le repository GitHub (optionnel)')
+                ->hideOnIndex(), // Masquer sur la liste pour gagner de la place
             UrlField::new('demoUrl', 'URL Démo')
-                ->setHelp('Lien vers la démo en ligne (optionnel)'),
-            BooleanField::new('featured', 'Projet mis en avant')
+                ->setHelp('Lien vers la démo en ligne (optionnel)')
+                ->hideOnIndex(), // Masquer sur la liste pour gagner de la place
+            BooleanField::new('featured', 'Mis en avant')
                 ->setHelp('Afficher ce projet en premier sur la page d\'accueil'),
             BooleanField::new('published', 'Publié')
                 ->setHelp('Rendre ce projet visible sur le site'),
-            IntegerField::new('sortOrder', 'Ordre d\'affichage')
+            IntegerField::new('sortOrder', 'Ordre')
                 ->setHelp('Plus le nombre est petit, plus le projet apparaît en premier (0 = premier)')
                 ->setFormTypeOptions(['attr' => ['min' => 0]]),
-            DateTimeField::new('createdAt', 'Créé le')->hideOnForm(),
-            DateTimeField::new('updatedAt', 'Modifié le')->hideOnForm(),
+            DateTimeField::new('createdAt', 'Créé le')->hideOnForm()->hideOnIndex(),
+            DateTimeField::new('updatedAt', 'Modifié le')->hideOnForm()->hideOnIndex(),
         ];
+
+        return $fields;
     }
 
     public function configureCrud(Crud $crud): Crud
@@ -75,7 +90,8 @@ class ProjectCrudController extends AbstractCrudController
             ->setPageTitle('edit', 'Modifier le projet')
             ->setPageTitle('detail', 'Détails du projet')
             ->setDefaultSort(['sortOrder' => 'ASC', 'createdAt' => 'DESC'])
-            ->setPaginatorPageSize(10);
+            ->setPaginatorPageSize(10)
+            ->showEntityActionsInlined(); // Affiche les actions dans chaque ligne
     }
 
     public function configureActions(Actions $actions): Actions
@@ -86,10 +102,14 @@ class ProjectCrudController extends AbstractCrudController
                 return $action->setIcon('fa fa-plus')->setLabel('Nouveau projet');
             })
             ->update(Crud::PAGE_INDEX, Action::EDIT, function (Action $action) {
-                return $action->setIcon('fa fa-edit');
+                return $action->setIcon('fa fa-edit')->setLabel('');
             })
             ->update(Crud::PAGE_INDEX, Action::DELETE, function (Action $action) {
-                return $action->setIcon('fa fa-trash');
-            });
+                return $action->setIcon('fa fa-trash')->setLabel('');
+            })
+            ->update(Crud::PAGE_INDEX, Action::DETAIL, function (Action $action) {
+                return $action->setIcon('fa fa-eye')->setLabel('');
+            })
+            ->reorder(Crud::PAGE_INDEX, [Action::DETAIL, Action::EDIT, Action::DELETE]);
     }
 }
