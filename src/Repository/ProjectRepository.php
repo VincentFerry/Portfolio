@@ -61,4 +61,36 @@ class ProjectRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * Find all published projects with images
+     */
+    public function findAllPublishedWithImages(): array
+    {
+        return $this->createQueryBuilder('p')
+            ->leftJoin('p.images', 'i')
+            ->addSelect('i')
+            ->andWhere('p.published = :published')
+            ->setParameter('published', true)
+            ->orderBy('p.sortOrder', 'ASC')
+            ->addOrderBy('p.createdAt', 'DESC')
+            ->addOrderBy('i.sortOrder', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * Find one project with its images
+     */
+    public function findOneWithImages(int $id): ?Project
+    {
+        return $this->createQueryBuilder('p')
+            ->leftJoin('p.images', 'i')
+            ->addSelect('i')
+            ->andWhere('p.id = :id')
+            ->setParameter('id', $id)
+            ->addOrderBy('i.sortOrder', 'ASC')
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 }

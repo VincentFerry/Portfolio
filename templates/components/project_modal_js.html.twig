@@ -1,0 +1,311 @@
+<!-- Swiper CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+
+<!-- Swiper JS -->
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+<style>
+    .project-swiper {
+        height: 320px;
+        border-radius: 0.5rem;
+        overflow: hidden;
+    }
+    
+    .project-swiper .swiper-slide {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #f3f4f6;
+    }
+    
+    .project-swiper .swiper-slide img {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+        border-radius: 0.5rem;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    }
+    
+    .project-swiper .swiper-button-next,
+    .project-swiper .swiper-button-prev {
+        color: white;
+        background: rgba(0, 0, 0, 0.6);
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        margin-top: -22px;
+        transition: all 0.3s ease;
+        backdrop-filter: blur(4px);
+    }
+    
+    .project-swiper .swiper-button-next:hover,
+    .project-swiper .swiper-button-prev:hover {
+        background: rgba(0, 0, 0, 0.8);
+        transform: scale(1.1);
+    }
+    
+    .project-swiper .swiper-button-next::after,
+    .project-swiper .swiper-button-prev::after {
+        font-size: 18px;
+        font-weight: bold;
+    }
+    
+    .project-swiper .swiper-pagination {
+        bottom: 10px !important;
+    }
+    
+    .project-swiper .swiper-pagination-bullet {
+        background: rgba(255, 255, 255, 0.6);
+        opacity: 1;
+        width: 12px;
+        height: 12px;
+        transition: all 0.3s ease;
+    }
+    
+    .project-swiper .swiper-pagination-bullet:hover {
+        background: rgba(255, 255, 255, 0.8);
+        transform: scale(1.2);
+    }
+    
+    .project-swiper .swiper-pagination-bullet-active {
+        background: white;
+        transform: scale(1.3);
+    }
+    
+    
+    .swiper-slide-loading {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 200px;
+    }
+</style>
+
+<script>
+    let currentProject = null;
+    let projectSwiper = null;
+    
+    async function openProjectModal(projectId) {
+        try {
+            const response = await fetch(`/api/project/${projectId}`);
+            if (!response.ok) throw new Error('Project not found');
+            
+            currentProject = await response.json();
+            
+            // Update modal content
+            document.getElementById('modalTitle').textContent = currentProject.title || 'Projet sans titre';
+            document.getElementById('modalDescription').textContent = currentProject.description || 'Aucune description disponible';
+            
+            // Setup carousel
+            setupSwiperCarousel();
+            
+            // Setup technologies
+            setupTechnologies();
+            
+            // Setup links
+            setupLinks();
+            
+            // Show modal
+            document.getElementById('projectModal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+            
+        } catch (error) {
+            console.error('Error loading project:', error);
+        }
+    }
+    
+    function closeProjectModal() {
+        document.getElementById('projectModal').classList.add('hidden');
+        document.body.style.overflow = '';
+        
+        // Destroy Swiper instance if it exists
+        if (projectSwiper) {
+            projectSwiper.destroy(true, true);
+            projectSwiper = null;
+        }
+        
+        currentProject = null;
+    }
+    
+    function setupSwiperCarousel() {
+        const carousel = document.getElementById('imageCarousel');
+        const swiperWrapper = document.getElementById('swiperWrapper');
+        
+        if (!currentProject.images || currentProject.images.length === 0) {
+            carousel.classList.add('hidden');
+            return;
+        }
+        
+        carousel.classList.remove('hidden');
+        swiperWrapper.innerHTML = '';
+        
+        // Create slides
+        currentProject.images.forEach((image, index) => {
+            const slide = document.createElement('div');
+            slide.className = 'swiper-slide';
+            
+            // Create loading placeholder
+            const loadingDiv = document.createElement('div');
+            loadingDiv.className = 'swiper-slide-loading';
+            loadingDiv.innerHTML = `
+                <div class="animate-pulse">
+                    <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                    </svg>
+                </div>
+            `;
+            
+            const img = document.createElement('img');
+            img.src = image.path;
+            img.alt = image.alt || currentProject.title;
+            img.style.display = 'none';
+            
+            img.onload = () => {
+                loadingDiv.remove();
+                img.style.display = 'block';
+            };
+            
+            img.onerror = () => {
+                loadingDiv.innerHTML = `
+                    <div class="text-center text-gray-500">
+                        <svg class="w-12 h-12 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        <p class="text-sm">Image non disponible</p>
+                    </div>
+                `;
+            };
+            
+            slide.appendChild(loadingDiv);
+            slide.appendChild(img);
+            swiperWrapper.appendChild(slide);
+        });
+        
+        // Initialize Swiper
+        projectSwiper = new Swiper('.project-swiper', {
+            // Navigation arrows
+            navigation: {
+                nextEl: '.swiper-button-next',
+                prevEl: '.swiper-button-prev',
+            },
+            
+            // Pagination
+            pagination: {
+                el: '.swiper-pagination',
+                clickable: true,
+            },
+            
+            // Enable keyboard control
+            keyboard: {
+                enabled: true,
+            },
+            
+            // Enable mouse wheel control
+            mousewheel: {
+                enabled: true,
+            },
+            
+            // Touch/swipe settings
+            touchRatio: 1,
+            touchAngle: 45,
+            grabCursor: true,
+            
+            // Loop if more than one image
+            loop: currentProject.images.length > 1,
+            
+            // Autoplay (optional)
+            // autoplay: {
+            //     delay: 5000,
+            //     disableOnInteraction: false,
+            // },
+            
+            // Effects
+            effect: 'slide',
+            speed: 300,
+            
+            // Responsive breakpoints
+            breakpoints: {
+                640: {
+                    slidesPerView: 1,
+                },
+                768: {
+                    slidesPerView: 1,
+                },
+                1024: {
+                    slidesPerView: 1,
+                }
+            }
+        });
+    }
+    
+    function setupTechnologies() {
+        const techContainer = document.getElementById('modalTechnologies');
+        const techList = document.getElementById('modalTechList');
+        
+        if (!currentProject.technologies || currentProject.technologies.length === 0) {
+            techContainer.classList.add('hidden');
+            return;
+        }
+        
+        techContainer.classList.remove('hidden');
+        techList.innerHTML = '';
+        
+        currentProject.technologies.forEach(tech => {
+            const span = document.createElement('span');
+            span.className = 'px-3 py-1 bg-primary-100 dark:bg-primary-900 text-primary-800 dark:text-primary-200 text-sm rounded-full';
+            span.textContent = tech;
+            techList.appendChild(span);
+        });
+    }
+    
+    function setupLinks() {
+        const linksContainer = document.getElementById('modalLinks');
+        linksContainer.innerHTML = '';
+        
+        if (currentProject.githubUrl) {
+            const githubLink = document.createElement('a');
+            githubLink.href = currentProject.githubUrl;
+            githubLink.target = '_blank';
+            githubLink.rel = 'noopener noreferrer';
+            githubLink.className = 'btn-secondary inline-flex items-center space-x-2';
+            githubLink.innerHTML = `
+                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 0C4.477 0 0 4.484 0 10.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0110 4.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.203 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.942.359.31.678.921.678 1.856 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0020 10.017C20 4.484 15.522 0 10 0z" clip-rule="evenodd"></path>
+                </svg>
+                <span>GitHub</span>
+            `;
+            linksContainer.appendChild(githubLink);
+        }
+        
+        if (currentProject.demoUrl) {
+            const demoLink = document.createElement('a');
+            demoLink.href = currentProject.demoUrl;
+            demoLink.target = '_blank';
+            demoLink.rel = 'noopener noreferrer';
+            demoLink.className = 'btn-primary inline-flex items-center space-x-2';
+            demoLink.innerHTML = `
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                </svg>
+                <span>{{ 'projects.view_demo'|trans }}</span>
+            `;
+            linksContainer.appendChild(demoLink);
+        }
+    }
+    
+    // Close modal on Escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && !document.getElementById('projectModal').classList.contains('hidden')) {
+            closeProjectModal();
+        }
+    });
+    
+    // Prevent multiple Swiper instances
+    document.addEventListener('DOMContentLoaded', function() {
+        // Ensure clean state on page load
+        if (projectSwiper) {
+            projectSwiper.destroy(true, true);
+            projectSwiper = null;
+        }
+    });
+</script>

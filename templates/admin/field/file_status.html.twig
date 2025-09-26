@@ -1,0 +1,11 @@
+{% if entity.instance.fileExists %}
+    <span class="badge badge-success">
+        <i class="fas fa-check-circle"></i>
+        {{ entity.instance.formattedFileSize }}
+    </span>
+{% else %}
+    <span class="badge badge-danger">
+        <i class="fas fa-exclamation-triangle"></i>
+        Fichier manquant
+    </span>
+{% endif %}

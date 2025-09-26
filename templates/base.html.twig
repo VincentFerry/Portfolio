@@ -25,6 +25,17 @@
         
         {% block stylesheets %}
             {{ encore_entry_link_tags('app') }}
+            <style>
+                /* Smooth scrolling for the entire page */
+                html {
+                    scroll-behavior: smooth;
+                }
+                
+                /* Offset for fixed header - adjust scroll position */
+                section[id] {
+                    scroll-margin-top: 100px;
+                }
+            </style>
         {% endblock %}
 
         {% block javascripts %}
@@ -53,21 +64,23 @@
             <nav class="container-custom section-padding py-4">
                 <div class="flex items-center justify-between">
                     <!-- Logo/Name -->
-                    <div class="flex items-center space-x-4">
+                    <a href="{{ path('app_home') }}" class="flex items-center space-x-4 hover:opacity-80 transition-opacity">
                         <img src="{{ asset('images/VincentFerry.png') }}" alt="{{ 'header.name'|trans }}" class="w-10 h-10 rounded-full object-cover">
                         <div>
                             <h1 class="text-xl font-bold text-gradient">{{ 'header.name'|trans }}</h1>
                             <p class="text-sm text-gray-600 dark:text-gray-400">{{ 'header.role'|trans }}</p>
                         </div>
-                    </div>
+                    </a>
 
-                    <!-- Navigation -->
-                    <div class="hidden md:flex items-center space-x-8">
-                        <a href="#home" class="nav-link">{{ 'nav.home'|trans }}</a>
-                        <a href="#skills" class="nav-link">{{ 'nav.skills'|trans }}</a>
-                        <a href="#projects" class="nav-link">{{ 'nav.projects'|trans }}</a>
-                        <a href="#contact" class="nav-link">{{ 'nav.contact'|trans }}</a>
-                    </div>
+                    <!-- Navigation (only on homepage) -->
+                    {% if app.request.get('_route') == 'app_home' %}
+                        <div class="hidden md:flex items-center space-x-8">
+                            <a href="#home" class="nav-link">{{ 'nav.home'|trans }}</a>
+                            <a href="#skills" class="nav-link">{{ 'nav.skills'|trans }}</a>
+                            <a href="#projects" class="nav-link">{{ 'nav.projects'|trans }}</a>
+                            <a href="#contact" class="nav-link">{{ 'nav.contact'|trans }}</a>
+                        </div>
+                    {% endif %}
 
                     <!-- Controls -->
                     <div class="flex items-center space-x-4">

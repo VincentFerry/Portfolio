@@ -1,0 +1,62 @@
+<!-- Project Modal -->
+<div id="projectModal" class="fixed inset-0 z-50 hidden">
+    <!-- Backdrop -->
+    <div class="fixed inset-0 bg-black bg-opacity-75 transition-opacity" onclick="closeProjectModal()"></div>
+    
+    <!-- Modal Content -->
+    <div class="fixed inset-0 flex items-center justify-center p-4">
+        <div class="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-hidden">
+            <!-- Modal Header -->
+            <div class="flex justify-between items-center p-6 border-b border-gray-200">
+                <h2 id="modalTitle" class="text-2xl font-bold text-gray-900"></h2>
+                <button onclick="closeProjectModal()" class="text-gray-500 hover:text-gray-700 transition-colors">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+            
+            <!-- Modal Body -->
+            <div class="p-6 overflow-y-auto max-h-[calc(90vh-120px)]">
+                <!-- Image Carousel with Swiper -->
+                <div id="imageCarousel" class="mb-6 hidden">
+                    <div class="swiper project-swiper">
+                        <div class="swiper-wrapper" id="swiperWrapper">
+                            <!-- Slides will be inserted here -->
+                        </div>
+                        
+                        <!-- Navigation buttons -->
+                        <div class="swiper-button-next"></div>
+                        <div class="swiper-button-prev"></div>
+                        
+                        <!-- Pagination -->
+                        <div class="swiper-pagination"></div>
+                    </div>
+                </div>
+                
+                <!-- Project Details -->
+                <div class="space-y-6">
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-900 mb-3">
+                            {% if app.request.locale == 'en' %}Description{% else %}Description{% endif %}
+                        </h3>
+                        <p id="modalDescription" class="text-gray-700 leading-relaxed"></p>
+                    </div>
+                    
+                    <div id="modalTechnologies" class="hidden">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-3">
+                            {% if app.request.locale == 'en' %}Technologies{% else %}Technologies{% endif %}
+                        </h3>
+                        <div id="modalTechList" class="flex flex-wrap gap-2">
+                            <!-- Technologies will be inserted here -->
+                        </div>
+                    </div>
+                    
+                    <div id="modalLinks" class="flex space-x-4">
+                        <!-- Links will be inserted here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

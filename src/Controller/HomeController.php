@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Repository\ProjectRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -55,10 +56,50 @@ class HomeController extends AbstractController
     #[Route('/{_locale}/projects', name: 'app_projects', requirements: ['_locale' => 'fr|en'], defaults: ['_locale' => 'fr'])]
     public function projects(ProjectRepository $projectRepository): Response
     {
-        $projects = $projectRepository->findAllPublished();
+        $projects = $projectRepository->findAllPublishedWithImages();
         
         return $this->render('home/projects.html.twig', [
             'projects' => $projects,
+        ]);
+    }
+
+    #[Route('/api/project/{id}', name: 'api_project_detail', methods: ['GET'])]
+    public function getProjectDetail(int $id, ProjectRepository $projectRepository): JsonResponse
+    {
+        $project = $projectRepository->findOneWithImages($id);
+
+        if (!$project || !$project->isPublished()) {
+            return $this->json(['error' => 'Project not found'], 404);
+        }
+
+        $images = [];
+        foreach ($project->getImages() as $image) {
+            $images[] = [
+                'filename' => $image->getFilename(),
+                'alt' => $image->getAlt() ?: $project->getTitle(),
+                'path' => $image->getImagePath(),
+                'isPrimary' => $image->isPrimary()
+            ];
+        }
+
+        // Si pas d'images, retourner une image par défaut
+        if (empty($images)) {
+            $images[] = [
+                'filename' => 'default-project.jpg',
+                'alt' => $project->getTitle(),
+                'path' => '/images/projects/default-project.jpg',
+                'isPrimary' => true
+            ];
+        }
+
+        return $this->json([
+            'id' => $project->getId(),
+            'title' => $project->getTitle(),
+            'description' => $project->getDescription(),
+            'technologies' => $project->getTechnologies(),
+            'githubUrl' => $project->getGithubUrl(),
+            'demoUrl' => $project->getDemoUrl(),
+            'images' => $images
         ]);
     }
 }

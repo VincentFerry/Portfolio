@@ -7,6 +7,9 @@ framework:
 
     # Configuration des pages d'erreur personnalisées
     error_controller: App\Controller\ErrorController::show
+    
+    # Configuration pour les uploads d'images
+    http_method_override: true
 
     #esi: true
     #fragments: true

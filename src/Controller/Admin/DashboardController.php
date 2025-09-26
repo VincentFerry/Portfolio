@@ -3,6 +3,7 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Project;
+use App\Entity\ProjectImage;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
@@ -32,7 +33,10 @@ class DashboardController extends AbstractDashboardController
     public function configureMenuItems(): iterable
     {
         yield MenuItem::linkToDashboard('Tableau de bord', 'fa fa-home');
+        yield MenuItem::section('Gestion des Projets');
         yield MenuItem::linkToCrud('Projets', 'fa fa-folder-open', Project::class);
+        yield MenuItem::linkToCrud('Images des Projets', 'fa fa-images', ProjectImage::class);
+        yield MenuItem::section('Navigation');
         yield MenuItem::linkToUrl('Voir le site', 'fa fa-external-link', '/');
     }
 }

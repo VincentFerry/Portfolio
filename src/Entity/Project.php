@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\ProjectRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -25,8 +27,6 @@ class Project
     #[Assert\NotBlank]
     private ?string $description = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $image = null;
 
     #[ORM\Column(type: Types::JSON)]
     private array $technologies = [];
@@ -54,10 +54,15 @@ class Project
     #[ORM\Column(type: Types::INTEGER)]
     private int $sortOrder = 0;
 
+    #[ORM\OneToMany(targetEntity: ProjectImage::class, mappedBy: 'project', cascade: ['persist', 'remove'], orphanRemoval: true)]
+    #[ORM\OrderBy(['sortOrder' => 'ASC', 'createdAt' => 'ASC'])]
+    private Collection $images;
+
     public function __construct()
     {
         $this->createdAt = new \DateTime();
         $this->updatedAt = new \DateTime();
+        $this->images = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -87,16 +92,6 @@ class Project
         return $this;
     }
 
-    public function getImage(): ?string
-    {
-        return $this->image;
-    }
-
-    public function setImage(?string $image): static
-    {
-        $this->image = $image;
-        return $this;
-    }
 
     public function getTechnologies(): array
     {
@@ -190,6 +185,61 @@ class Project
     public function preUpdate(): void
     {
         $this->updatedAt = new \DateTime();
+    }
+
+    /**
+     * @return Collection<int, ProjectImage>
+     */
+    public function getImages(): Collection
+    {
+        return $this->images;
+    }
+
+    public function addImage(ProjectImage $image): static
+    {
+        if (!$this->images->contains($image)) {
+            $this->images->add($image);
+            $image->setProject($this);
+        }
+
+        return $this;
+    }
+
+    public function removeImage(ProjectImage $image): static
+    {
+        if ($this->images->removeElement($image)) {
+            // set the owning side to null (unless already changed)
+            if ($image->getProject() === $this) {
+                $image->setProject(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * Get the primary image or the first image if no primary is set
+     */
+    public function getPrimaryImage(): ?ProjectImage
+    {
+        // First, try to find a primary image
+        foreach ($this->images as $image) {
+            if ($image->isPrimary()) {
+                return $image;
+            }
+        }
+
+        // If no primary image, return the first one
+        return $this->images->first() ?: null;
+    }
+
+    /**
+     * Get the primary image filename for backward compatibility
+     */
+    public function getPrimaryImageFilename(): ?string
+    {
+        $primaryImage = $this->getPrimaryImage();
+        return $primaryImage ? $primaryImage->getFilename() : null;
     }
 
     public function __toString(): string
