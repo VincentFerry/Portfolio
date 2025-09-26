@@ -1,0 +1,128 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'projects.all_projects'|trans }} - {{ parent() }}{% endblock %}
+
+{% block body %}
+<!-- Hero Section -->
+<section class="section-padding bg-gradient-to-br from-primary-50 to-purple-50 dark:from-dark-900 dark:to-dark-800">
+    <div class="container-custom">
+        <div class="text-center space-y-6 animate-fade-in">
+            <h1 class="text-4xl md:text-6xl font-bold text-gradient">{{ 'projects.all_projects'|trans }}</h1>
+            <p class="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+                {% if app.request.locale == 'en' %}
+                    Discover all my projects, from web applications to mobile apps, showcasing my skills and passion for development.
+                {% else %}
+                    Découvrez tous mes projets, des applications web aux applications mobiles, mettant en valeur mes compétences et ma passion pour le développement.
+                {% endif %}
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- Projects Grid -->
+<section class="section-padding bg-white dark:bg-dark-800">
+    <div class="container-custom">
+        {% if projects|length > 0 %}
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {% for project in projects %}
+                    <div class="card overflow-hidden group hover:scale-105 transition-transform duration-300 animate-fade-in">
+                        <div class="relative overflow-hidden">
+                            {% if project.image %}
+                                <img src="{{ asset('images/projects/' ~ project.image) }}" alt="{{ project.title }}" class="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-300">
+                            {% else %}
+                                <div class="w-full h-48 bg-gradient-to-br from-primary-400 to-purple-400 flex items-center justify-center">
+                                    <svg class="w-16 h-16 text-white opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                                    </svg>
+                                </div>
+                            {% endif %}
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                            {% if project.featured %}
+                                <div class="absolute top-4 right-4 bg-yellow-400 text-yellow-900 px-2 py-1 rounded-full text-xs font-medium">
+                                    ⭐ Featured
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="p-6">
+                            <h3 class="text-xl font-bold mb-2">{{ project.title }}</h3>
+                            <p class="text-gray-600 dark:text-gray-300 mb-4">{{ project.description }}</p>
+                            <div class="flex flex-wrap gap-2 mb-4">
+                                {% for tech in project.technologies %}
+                                    <span class="px-2 py-1 bg-gray-100 dark:bg-dark-700 text-xs rounded-full">{{ tech }}</span>
+                                {% endfor %}
+                            </div>
+                            <div class="flex gap-4">
+                                {% if project.demoUrl %}
+                                    <a href="{{ project.demoUrl }}" target="_blank" class="flex-1 btn-primary text-center text-sm">
+                                        {{ 'projects.view_demo'|trans }}
+                                    </a>
+                                {% endif %}
+                                {% if project.githubUrl %}
+                                    <a href="{{ project.githubUrl }}" target="_blank" class="flex-1 btn-secondary text-center text-sm">
+                                        {{ 'projects.view_code'|trans }}
+                                    </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <!-- Empty State -->
+            <div class="text-center py-16">
+                <div class="w-24 h-24 bg-gray-100 dark:bg-dark-700 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                    </svg>
+                </div>
+                <h3 class="text-xl font-semibold mb-2">
+                    {% if app.request.locale == 'en' %}
+                        No projects yet
+                    {% else %}
+                        Aucun projet pour le moment
+                    {% endif %}
+                </h3>
+                <p class="text-gray-600 dark:text-gray-300 mb-6">
+                    {% if app.request.locale == 'en' %}
+                        Projects will appear here once they are added to the portfolio.
+                    {% else %}
+                        Les projets apparaîtront ici une fois qu'ils seront ajoutés au portfolio.
+                    {% endif %}
+                </p>
+                <a href="{{ path('app_home') }}" class="btn-primary">
+                    {% if app.request.locale == 'en' %}
+                        Back to Home
+                    {% else %}
+                        Retour à l'accueil
+                    {% endif %}
+                </a>
+            </div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Filter Section (Future Enhancement) -->
+<section class="section-padding bg-gray-50 dark:bg-dark-900">
+    <div class="container-custom">
+        <div class="text-center">
+            <h3 class="text-2xl font-bold mb-4">
+                {% if app.request.locale == 'en' %}
+                    Interested in a specific technology?
+                {% else %}
+                    Intéressé par une technologie spécifique ?
+                {% endif %}
+            </h3>
+            <p class="text-gray-600 dark:text-gray-300 mb-8">
+                {% if app.request.locale == 'en' %}
+                    Contact me to discuss your project needs and how I can help bring your ideas to life.
+                {% else %}
+                    Contactez-moi pour discuter de vos besoins de projet et comment je peux vous aider à concrétiser vos idées.
+                {% endif %}
+            </p>
+            <a href="{{ path('app_home') }}#contact" class="btn-primary">
+                {{ 'contact.title'|trans }}
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,86 @@
+{% extends 'bundles/TwigBundle/Exception/base_error.html.twig' %}
+
+{% block title %}Erreur serveur - 500{% endblock %}
+
+{% block meta_description %}Une erreur interne du serveur s'est produite. Nos équipes travaillent à résoudre le problème.{% endblock %}
+
+{% block body %}
+<div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-red-50 to-orange-50 dark:from-dark-900 dark:to-red-900/20 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-2xl mx-auto text-center space-y-8">
+        <!-- Animation 500 -->
+        <div class="relative">
+            <div class="text-6xl md:text-8xl font-bold text-gradient opacity-30 select-none animate-pulse">
+                500
+            </div>
+            <div class="absolute inset-0 flex items-center justify-center">
+                <div class="w-24 h-24 bg-red-100 dark:bg-red-900/50 rounded-full shadow-2xl flex items-center justify-center animate-bounce">
+                    <svg class="w-12 h-12 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contenu principal -->
+        <div class="space-y-6 animate-fade-in">
+            <h1 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-gray-100">
+                Erreur interne du serveur
+            </h1>
+            
+            <p class="text-lg text-gray-600 dark:text-gray-300 leading-relaxed">
+                Une erreur inattendue s'est produite sur nos serveurs. 
+                Nos équipes ont été automatiquement notifiées et travaillent à résoudre le problème.
+            </p>
+
+            <!-- Actions -->
+            <div class="flex flex-col sm:flex-row gap-4 justify-center items-center pt-6">
+                <a href="{{ path('app_home') }}" class="btn-primary inline-flex items-center justify-center">
+                    <svg class="mr-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                    </svg>
+                    Retour à l'accueil
+                </a>
+                
+                <button onclick="window.location.reload()" class="btn-secondary inline-flex items-center justify-center">
+                    <svg class="mr-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                    </svg>
+                    Réessayer
+                </button>
+            </div>
+
+            <!-- Informations de contact -->
+            <div class="mt-12 p-6 bg-orange-50 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-800 rounded-xl">
+                <h3 class="text-lg font-semibold text-orange-800 dark:text-orange-100 mb-2">
+                    Le problème persiste ?
+                </h3>
+                <p class="text-sm text-orange-700 dark:text-orange-300 mb-4">
+                    Si cette erreur continue d'apparaître, n'hésitez pas à me contacter directement.
+                </p>
+                <a href="mailto:vincent.ferry78490@gmail.com" class="inline-flex items-center text-orange-800 dark:text-orange-200 font-medium hover:underline">
+                    <svg class="mr-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                    </svg>
+                    vincent.ferry78490@gmail.com
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Script pour animation au chargement -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const elements = document.querySelectorAll('.animate-fade-in');
+    elements.forEach((el, index) => {
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(20px)';
+        setTimeout(() => {
+            el.style.transition = 'all 0.6s ease-out';
+            el.style.opacity = '1';
+            el.style.transform = 'translateY(0)';
+        }, index * 200);
+    });
+});
+</script>
+{% endblock %}

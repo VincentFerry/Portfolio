@@ -1,0 +1,108 @@
+{% extends 'bundles/TwigBundle/Exception/base_error.html.twig' %}
+
+{% block title %}Page non trouvée - 404{% endblock %}
+
+{% block meta_description %}La page que vous recherchez n'existe pas ou a été déplacée.{% endblock %}
+
+{% block body %}
+<div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-50 to-purple-50 dark:from-dark-900 dark:to-dark-800 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-4xl mx-auto text-center space-y-8">
+        <!-- Animation 404 -->
+        <div class="relative">
+            <div class="text-8xl md:text-9xl font-bold text-gradient opacity-20 select-none animate-pulse">
+                404
+            </div>
+            <div class="absolute inset-0 flex items-center justify-center">
+                <div class="w-32 h-32 md:w-40 md:h-40 bg-white dark:bg-dark-700 rounded-full shadow-2xl flex items-center justify-center animate-bounce">
+                    <svg class="w-16 h-16 md:w-20 md:h-20 text-primary-600 dark:text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 12h6m-6-4h6m2 5.291A7.962 7.962 0 0112 15c-2.34 0-4.291-1.007-5.691-2.709M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contenu principal -->
+        <div class="space-y-6 animate-fade-in">
+            <h1 class="text-4xl md:text-5xl font-bold text-gray-900 dark:text-gray-100">
+                Oups ! Page introuvable
+            </h1>
+            
+            <p class="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto leading-relaxed">
+                La page que vous recherchez n'existe pas ou a été déplacée. 
+                Pas de panique, explorons ensemble d'autres parties de mon portfolio !
+            </p>
+
+            <!-- Suggestions de navigation -->
+            <div class="grid md:grid-cols-3 gap-6 mt-12 max-w-3xl mx-auto">
+                <!-- Accueil -->
+                <a href="{{ path('app_home') }}" class="group p-6 bg-white dark:bg-dark-700 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 border border-gray-200 dark:border-gray-600">
+                    <div class="w-12 h-12 bg-primary-100 dark:bg-primary-900 rounded-lg flex items-center justify-center mb-4 mx-auto group-hover:bg-primary-200 dark:group-hover:bg-primary-800 transition-colors">
+                        <svg class="w-6 h-6 text-primary-600 dark:text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">Accueil</h3>
+                    <p class="text-gray-600 dark:text-gray-300 text-sm">Retourner à la page d'accueil</p>
+                </a>
+
+                <!-- Projets -->
+                <a href="{{ path('app_home') }}#projects" class="group p-6 bg-white dark:bg-dark-700 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 border border-gray-200 dark:border-gray-600">
+                    <div class="w-12 h-12 bg-primary-100 dark:bg-primary-900 rounded-lg flex items-center justify-center mb-4 mx-auto group-hover:bg-primary-200 dark:group-hover:bg-primary-800 transition-colors">
+                        <svg class="w-6 h-6 text-primary-600 dark:text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">Mes Projets</h3>
+                    <p class="text-gray-600 dark:text-gray-300 text-sm">Découvrir mes réalisations</p>
+                </a>
+
+                <!-- Contact -->
+                <a href="{{ path('app_home') }}#contact" class="group p-6 bg-white dark:bg-dark-700 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 border border-gray-200 dark:border-gray-600">
+                    <div class="w-12 h-12 bg-primary-100 dark:bg-primary-900 rounded-lg flex items-center justify-center mb-4 mx-auto group-hover:bg-primary-200 dark:group-hover:bg-primary-800 transition-colors">
+                        <svg class="w-6 h-6 text-primary-600 dark:text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">Contact</h3>
+                    <p class="text-gray-600 dark:text-gray-300 text-sm">Me contacter directement</p>
+                </a>
+            </div>
+
+            <!-- Bouton principal de retour -->
+            <div class="pt-8">
+                <a href="{{ path('app_home') }}" class="btn-primary inline-flex items-center justify-center text-lg px-8 py-4">
+                    <svg class="mr-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                    </svg>
+                    Retour à l'accueil
+                </a>
+            </div>
+        </div>
+
+        <!-- Message d'encouragement -->
+        <div class="mt-16 p-6 bg-white/50 dark:bg-dark-700/50 backdrop-blur-sm rounded-xl border border-gray-200 dark:border-gray-600">
+            <p class="text-gray-600 dark:text-gray-300 italic">
+                "Chaque erreur est une opportunité d'apprendre quelque chose de nouveau." 
+                <span class="block mt-2 text-sm text-gray-500 dark:text-gray-400">- Vincent Ferry, Développeur Full Stack</span>
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- Script pour animation au chargement -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Animation d'entrée pour les éléments
+    const elements = document.querySelectorAll('.animate-fade-in');
+    elements.forEach((el, index) => {
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(20px)';
+        setTimeout(() => {
+            el.style.transition = 'all 0.6s ease-out';
+            el.style.opacity = '1';
+            el.style.transform = 'translateY(0)';
+        }, index * 200);
+    });
+});
+</script>
+{% endblock %}

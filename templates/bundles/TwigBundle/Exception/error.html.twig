@@ -1,0 +1,70 @@
+{% extends 'bundles/TwigBundle/Exception/base_error.html.twig' %}
+
+{% block title %}Erreur {{ status_code|default('') }} - {{ status_text|default('Erreur') }}{% endblock %}
+
+{% block meta_description %}Une erreur s'est produite sur le site. Veuillez réessayer plus tard.{% endblock %}
+
+{% block body %}
+<div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-red-50 to-orange-50 dark:from-dark-900 dark:to-red-900/20 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-2xl mx-auto text-center space-y-8">
+        <!-- Code d'erreur -->
+        <div class="relative">
+            <div class="text-6xl md:text-8xl font-bold text-gradient opacity-30 select-none">
+                {{ status_code|default('ERROR') }}
+            </div>
+        </div>
+
+        <!-- Contenu principal -->
+        <div class="space-y-6">
+            <div class="w-20 h-20 bg-red-100 dark:bg-red-900/50 rounded-full flex items-center justify-center mx-auto">
+                <svg class="w-10 h-10 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.464 0L4.34 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+                </svg>
+            </div>
+
+            <h1 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-gray-100">
+                {{ status_text|default('Une erreur s\'est produite') }}
+            </h1>
+            
+            <p class="text-lg text-gray-600 dark:text-gray-300 leading-relaxed">
+                {% if status_code == 500 %}
+                    Une erreur interne du serveur s'est produite. Nos équipes ont été notifiées et travaillent à résoudre le problème.
+                {% elseif status_code == 403 %}
+                    Vous n'avez pas les permissions nécessaires pour accéder à cette page.
+                {% else %}
+                    Une erreur inattendue s'est produite. Veuillez réessayer plus tard.
+                {% endif %}
+            </p>
+
+            <!-- Actions -->
+            <div class="flex flex-col sm:flex-row gap-4 justify-center items-center pt-6">
+                <a href="{{ path('app_home') }}" class="btn-primary inline-flex items-center justify-center">
+                    <svg class="mr-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                    </svg>
+                    Retour à l'accueil
+                </a>
+                
+                <button onclick="window.history.back()" class="btn-secondary inline-flex items-center justify-center">
+                    <svg class="mr-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                    </svg>
+                    Page précédente
+                </button>
+            </div>
+
+            <!-- Informations de contact -->
+            {% if status_code == 500 %}
+            <div class="mt-12 p-4 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg">
+                <p class="text-sm text-yellow-800 dark:text-yellow-200">
+                    Si le problème persiste, n'hésitez pas à me contacter à 
+                    <a href="mailto:vincent.ferry78490@gmail.com" class="font-medium underline hover:no-underline">
+                        vincent.ferry78490@gmail.com
+                    </a>
+                </p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

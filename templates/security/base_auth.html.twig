@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="{{ app.request.locale }}" class="scroll-smooth dark">
+    <head>
+        <meta charset="UTF-8">
+        <title>{% block title %}{{ 'header.name'|trans }} - {{ 'header.role'|trans }}{% endblock %}</title>
+        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text></svg>">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="{% block meta_description %}{{ 'about.description'|trans }}{% endblock %}">
+        <meta name="keywords" content="{% block meta_keywords %}développeur, full stack, web, symfony, javascript, php{% endblock %}">
+        <meta name="author" content="{{ 'header.name'|trans }}">
+        
+        <!-- Open Graph / Facebook -->
+        <meta property="og:type" content="website">
+        <meta property="og:url" content="{{ app.request.uri }}">
+        <meta property="og:title" content="{% block og_title %}{{ 'header.name'|trans }} - {{ 'header.role'|trans }}{% endblock %}">
+        <meta property="og:description" content="{% block og_description %}{{ 'about.description'|trans }}{% endblock %}">
+        <meta property="og:image" content="{% block og_image %}{{ absolute_url(asset('images/VincentFerry.png')) }}{% endblock %}">
+
+        <!-- Twitter -->
+        <meta property="twitter:card" content="summary_large_image">
+        <meta property="twitter:url" content="{{ app.request.uri }}">
+        <meta property="twitter:title" content="{% block twitter_title %}{{ 'header.name'|trans }} - {{ 'header.role'|trans }}{% endblock %}">
+        <meta property="twitter:description" content="{% block twitter_description %}{{ 'about.description'|trans }}{% endblock %}">
+        <meta property="twitter:image" content="{% block twitter_image %}{{ absolute_url(asset('images/VincentFerry.png')) }}{% endblock %}">
+        
+        {% block stylesheets %}
+            {{ encore_entry_link_tags('app') }}
+        {% endblock %}
+
+        {% block javascripts %}
+            {{ encore_entry_script_tags('app') }}
+            
+            <script>
+                // Vérifie si l'utilisateur a une préférence enregistrée
+                if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                    document.documentElement.classList.add('dark');
+                    localStorage.theme = 'dark';
+                } else {
+                    document.documentElement.classList.remove('dark');
+                    localStorage.theme = 'light';
+                }
+                
+                // Forcer le mode sombre par défaut
+                document.documentElement.classList.add('dark');
+                localStorage.theme = 'dark';
+            </script>
+        {% endblock %}
+    </head>
+
+    <body class="bg-gray-50 dark:bg-dark-900 text-gray-900 dark:text-gray-100 transition-colors duration-300">
+        <!-- Header simplifié pour l'authentification -->
+        <header class="absolute top-0 left-0 right-0 z-50">
+            <nav class="container-custom section-padding py-6">
+                <div class="flex items-center justify-between">
+                    <!-- Logo/Name -->
+                    <a href="{{ path('app_home') }}" class="flex items-center space-x-4 hover:opacity-80 transition-opacity">
+                        <img src="{{ asset('images/VincentFerry.png') }}" alt="{{ 'header.name'|trans }}" class="w-10 h-10 rounded-full object-cover">
+                        <div>
+                            <h1 class="text-xl font-bold text-gradient">{{ 'header.name'|trans }}</h1>
+                            <p class="text-sm text-gray-600 dark:text-gray-400">{{ 'header.role'|trans }}</p>
+                        </div>
+                    </a>
+
+                    <!-- Theme Toggle seulement -->
+                    <button id="theme-toggle" class="p-2 rounded-lg bg-white/20 dark:bg-dark-700/50 hover:bg-white/30 dark:hover:bg-dark-600/70 transition-colors duration-200 backdrop-blur-sm" title="{{ 'header.theme_toggle'|trans }}">
+                        <svg class="w-5 h-5 hidden dark:block" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd"></path>
+                        </svg>
+                        <svg class="w-5 h-5 block dark:hidden" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+                        </svg>
+                    </button>
+                </div>
+            </nav>
+        </header>
+
+        <!-- Main Content -->
+        <main>
+            {% block body %}{% endblock %}
+        </main>
+
+        <!-- Footer simplifié -->
+        <footer class="absolute bottom-0 left-0 right-0 py-4">
+            <div class="container-custom text-center">
+                <p class="text-sm text-gray-500 dark:text-gray-400">
+                    © {{ 'now'|date('Y') }} {{ 'header.name'|trans }}. Tous droits réservés.
+                </p>
+            </div>
+        </footer>
+    </body>
+</html>

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{% if locale == 'en' %}Message received{% else %}Message reçu{% endif %}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            background: linear-gradient(135deg, #0ea5e9, #8b5cf6);
+            color: white;
+            padding: 30px;
+            border-radius: 8px 8px 0 0;
+            text-align: center;
+        }
+        .content {
+            background: #f8fafc;
+            padding: 30px;
+            border-radius: 0 0 8px 8px;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e5e7eb;
+            color: #6b7280;
+            font-size: 14px;
+        }
+        .cta-button {
+            display: inline-block;
+            background: #0ea5e9;
+            color: white;
+            padding: 12px 24px;
+            text-decoration: none;
+            border-radius: 6px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>✅ {% if locale == 'en' %}Thank you {{ name }}!{% else %}Merci {{ name }} !{% endif %}</h1>
+        <p>{% if locale == 'en' %}Your message has been received{% else %}Votre message a bien été reçu{% endif %}</p>
+    </div>
+    
+    <div class="content">
+        {% if locale == 'en' %}
+            <p>Hello {{ name }},</p>
+            <p>Thank you for contacting me! I have received your message and will get back to you as soon as possible, usually within 24-48 hours.</p>
+            <p>In the meantime, feel free to check out my latest projects on my portfolio.</p>
+            <p>Best regards,<br>Vincent Ferry</p>
+        {% else %}
+            <p>Bonjour {{ name }},</p>
+            <p>Merci de m'avoir contacté ! J'ai bien reçu votre message et je vous répondrai dans les plus brefs délais, généralement sous 24-48h.</p>
+            <p>En attendant, n'hésitez pas à découvrir mes derniers projets sur mon portfolio.</p>
+            <p>Cordialement,<br>Vincent Ferry</p>
+        {% endif %}
+        
+        <div style="text-align: center;">
+            <a href="https://vincentferry.dev" class="cta-button">
+                {% if locale == 'en' %}Visit my portfolio{% else %}Visiter mon portfolio{% endif %}
+            </a>
+        </div>
+    </div>
+    
+    <div class="footer">
+        <p>Vincent Ferry - {% if locale == 'en' %}Full Stack Developer{% else %}Développeur Full Stack{% endif %}</p>
+    </div>
+</body>
+</html>
