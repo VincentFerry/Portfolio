@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Project;
 use App\Repository\ProjectRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -18,33 +19,32 @@ class HomeController extends AbstractController
         // Get featured projects from database
         $projects = $projectRepository->findFeatured(3);
 
-        // Sample skills data
+        // Professional skills based on CV
         $skills = [
             'frontend' => [
                 ['name' => 'HTML5', 'logo' => 'html5.svg'],
                 ['name' => 'CSS3', 'logo' => 'css3.svg'],
                 ['name' => 'JavaScript', 'logo' => 'javascript.svg'],
-                ['name' => 'TypeScript', 'logo' => 'typescript.svg'],
-                ['name' => 'React', 'logo' => 'react.svg'],
                 ['name' => 'Vue.js', 'logo' => 'vue.svg'],
-                ['name' => 'Tailwind CSS', 'logo' => 'tailwind.svg']
+                ['name' => 'jQuery', 'logo' => 'jquery.svg'],
+                ['name' => 'Bootstrap', 'logo' => 'bootstrap.svg']
             ],
             'backend' => [
                 ['name' => 'PHP', 'logo' => 'php.svg'],
                 ['name' => 'Symfony', 'logo' => 'symfony.svg'],
+                ['name' => 'Laravel', 'logo' => 'laravel.svg'],
                 ['name' => 'Node.js', 'logo' => 'nodejs.svg'],
-                ['name' => 'Python', 'logo' => 'python.svg'],
                 ['name' => 'MySQL', 'logo' => 'mysql.svg'],
                 ['name' => 'PostgreSQL', 'logo' => 'postgresql.svg'],
-                ['name' => 'MongoDB', 'logo' => 'mongodb.svg']
+                ['name' => 'API REST', 'logo' => 'api.svg']
             ],
             'tools' => [
                 ['name' => 'Git', 'logo' => 'git.svg'],
                 ['name' => 'Docker', 'logo' => 'docker.svg'],
-                ['name' => 'AWS', 'logo' => 'aws.svg'],
                 ['name' => 'Linux', 'logo' => 'linux.svg'],
-                ['name' => 'VS Code', 'logo' => 'vscode.svg'],
-                ['name' => 'Figma', 'logo' => 'figma.svg']
+                ['name' => 'Bash', 'logo' => 'bash.svg'],
+                ['name' => 'SQL', 'logo' => 'sql.svg'],
+                ['name' => 'VS Code', 'logo' => 'vscode.svg']
             ]
         ];
 
@@ -64,15 +64,9 @@ class HomeController extends AbstractController
         ]);
     }
 
-    #[Route('/{_locale}/project/{id}', name: 'app_project_detail', requirements: ['_locale' => 'fr|en', 'id' => '\d+'], defaults: ['_locale' => 'fr'])]
-    public function projectDetail(int $id, ProjectRepository $projectRepository): Response
+    #[Route('/{_locale}/project/{id}', name: 'app_project_detail', requirements: ['_locale' => 'en|fr'])]
+    public function projectDetail(Project $project): Response
     {
-        $project = $projectRepository->findOneWithImages($id);
-
-        if (!$project || !$project->isPublished()) {
-            throw $this->createNotFoundException('Project not found');
-        }
-
         return $this->render('project/detail.html.twig', [
             'project' => $project,
         ]);
@@ -82,8 +76,8 @@ class HomeController extends AbstractController
     public function getProjectDetail(int $id, Request $request, ProjectRepository $projectRepository): JsonResponse
     {
         $project = $projectRepository->findOneWithImages($id);
-
-        if (!$project || !$project->isPublished()) {
+        
+        if (!$project) {
             return $this->json(['error' => 'Project not found'], 404);
         }
 

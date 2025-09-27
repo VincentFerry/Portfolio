@@ -12,12 +12,12 @@ header:
 
 hero:
   title: "Vincent Ferry"
-  subtitle: "Développeur Full Stack passionné par la création d'expériences web modernes et performantes"
-  cta: "Découvrir mes projets"
+  subtitle: "Développeur Full Stack<br>Solutions robustes pour entreprises et startups"
+  cta: "Découvrir mes réalisations"
 
 about:
   title: "À propos de moi"
-  description: "Développeur passionné avec plusieurs années d'expérience dans le développement web. Je crée des solutions innovantes en utilisant les dernières technologies pour offrir des expériences utilisateur exceptionnelles."
+  description: "Développeur Full Stack avec plus de 5 ans d'expérience professionnelle dans 3 entreprises différentes.<br>Expert en PHP/Symfony, Laravel et Node.js, je conçois des solutions web robustes et scalables.<br>De l'immobilier aux ESN, j'ai livré des projets complexes en maîtrisant les contraintes business et techniques."
 
 skills:
   title: "Mes compétences"
@@ -26,11 +26,14 @@ skills:
   tools: "Outils & DevOps"
 
 projects:
-  title: "Mes projets"
-  view_more: "Voir plus de projets"
+  title: "Mes réalisations"
+  view_more: "Voir plus de réalisations"
   view_demo: "Voir la démo"
   view_code: "Voir le code"
-  all_projects: "Tous mes projets"
+  all_projects: "Toutes mes réalisations"
+
+cv:
+  title: "Mon CV"
 
 contact:
   title: "Me contacter"
