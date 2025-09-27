@@ -1,0 +1,18 @@
+# Mode maintenance activé le 2025-09-26 17:11:59
+# Généré automatiquement par la commande app:maintenance
+
+RewriteEngine On
+
+# Permettre l'accès aux assets nécessaires
+RewriteCond %{REQUEST_URI} !^/maintenance\.html$
+RewriteCond %{REQUEST_URI} !^/images/
+RewriteCond %{REQUEST_URI} !^/build/
+RewriteCond %{REQUEST_URI} !^/bundles/
+RewriteCond %{REQUEST_URI} !^/favicon\.ico$
+
+# Rediriger tout le reste vers la page de maintenance
+RewriteRule ^(.*)$ /maintenance.html [R=503,L]
+
+# Headers pour indiquer la maintenance temporaire
+Header always set Retry-After "300"
+Header always set Cache-Control "no-cache, no-store, must-revalidate"

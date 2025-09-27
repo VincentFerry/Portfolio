@@ -27,6 +27,37 @@ Un portfolio personnel moderne développé avec Symfony 7.3, TailwindCSS et Webp
 - **JavaScript Vanilla** - Interactions client
 - **CSS3** - Animations et transitions
 
+## 🚧 Gestion de la maintenance
+
+Le site dispose d'un système de maintenance intégré pour les mises à jour en production.
+
+### Activer le mode maintenance
+```bash
+php bin/console app:maintenance on
+```
+
+### Désactiver le mode maintenance
+```bash
+php bin/console app:maintenance off
+```
+
+### Vérifier l'état de la maintenance
+```bash
+php bin/console app:maintenance status
+```
+
+### Fonctionnement
+- **Commande Symfony** : Utilise le système de commandes intégré avec gestion d'erreurs
+- **Activation** : Crée un fichier `.maintenance` et modifie `.htaccess` pour rediriger vers `/maintenance.html`
+- **Page de maintenance** : Design moderne avec actualisation automatique toutes les 30 secondes
+- **Désactivation** : Supprime le fichier de maintenance et restaure le `.htaccess` original
+- **Sécurité** : Les assets (images, CSS, JS) restent accessibles pendant la maintenance
+- **Interface claire** : Messages colorés et tableaux d'informations avec SymfonyStyle
+
+### Notes importantes
+- ✅ **En production** (Apache/Nginx) : Fonctionne automatiquement via `.htaccess`
+- ⚠️ **En développement** : Le serveur PHP (`php -S`) ne traite pas `.htaccess` - tester manuellement `/maintenance.html`
+
 ## 📦 Installation
 
 ### Prérequis

@@ -1,0 +1,302 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ project.getLocalizedTitle(app.request.locale) }} - {{ parent() }}{% endblock %}
+
+{% block meta_description %}{{ project.getLocalizedDescription(app.request.locale)|slice(0, 160) }}{% endblock %}
+
+{% block body %}
+<!-- Hero Section -->
+<section class="section-padding bg-gradient-to-br from-primary-50 to-purple-50 dark:from-dark-900 dark:to-dark-800">
+    <div class="container-custom">
+        <div class="max-w-4xl mx-auto text-center space-y-6 animate-fade-in">
+            <h1 class="text-4xl md:text-6xl font-bold text-gradient">{{ project.getLocalizedTitle(app.request.locale) }}</h1>
+            <!-- Breadcrumb -->
+            <nav class="flex justify-center mb-8" aria-label="Breadcrumb">
+                <ol class="inline-flex items-center space-x-1 md:space-x-3">
+                    <li class="inline-flex items-center">
+                        <a href="{{ path('app_home') }}" class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-primary-600 dark:text-gray-400 dark:hover:text-primary-400">
+                            <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path>
+                            </svg>
+                            {{ 'nav.home'|trans }}
+                        </a>
+                    </li>
+                    <li>
+                        <div class="flex items-center">
+                            <svg class="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
+                            </svg>
+                            <a href="{{ path('app_projects') }}" class="ml-1 text-sm font-medium text-gray-700 hover:text-primary-600 dark:text-gray-400 dark:hover:text-primary-400 md:ml-2">
+                                {{ 'projects.title'|trans }}
+                            </a>
+                        </div>
+                    </li>
+                    <li aria-current="page">
+                        <div class="flex items-center">
+                            <svg class="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
+                            </svg>
+                            <span class="ml-1 text-sm font-medium text-gray-500 dark:text-gray-400 md:ml-2">{{ project.getLocalizedTitle(app.request.locale) }}</span>
+                        </div>
+                    </li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+</section>
+
+<!-- Project Images Section -->
+{% if project.images|length > 0 %}
+<section class="section-padding bg-white dark:bg-dark-800">
+    <div class="container-custom">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold text-gradient">
+                    {% if app.request.locale == 'en' %}About this project{% else %}À propos de ce projet{% endif %}
+                </h2>
+            </div>
+            
+            <div class="grid lg:grid-cols-2 gap-12 items-start">
+                <!-- Description à gauche -->
+                <div class="space-y-6">
+                    <div class="text-lg text-gray-600 dark:text-gray-300 leading-relaxed text-justify whitespace-pre-line">
+                        {{ project.getLocalizedDescription(app.request.locale)|nl2br }}
+                    </div>
+                </div>
+                
+                <!-- Technologies et CTA à droite -->
+                <div class="space-y-8">
+                    {% if project.technologies|length > 0 %}
+                        <div>
+                            <h3 class="text-xl font-bold mb-4 text-gradient">
+                                {% if app.request.locale == 'en' %}Technologies Used{% else %}Technologies Utilisées{% endif %}
+                            </h3>
+                            <div class="flex flex-wrap gap-2">
+                                {% for tech in project.technologies %}
+                                    <span class="px-4 py-2 bg-gradient-to-r from-primary-100 to-purple-100 dark:from-primary-900 dark:to-purple-900 text-primary-800 dark:text-primary-200 rounded-full font-medium text-sm border border-primary-200 dark:border-primary-700">
+                                        {{ tech }}
+                                    </span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% endif %}
+                    
+                    <!-- Actions -->
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        {% if project.demoUrl %}
+                            <a href="{{ project.demoUrl }}" target="_blank" rel="noopener noreferrer" class="btn-primary inline-flex items-center justify-center">
+                                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                                </svg>
+                                {{ 'projects.view_demo'|trans }}
+                            </a>
+                        {% endif %}
+                        {% if project.githubUrl %}
+                            <a href="{{ project.githubUrl }}" target="_blank" rel="noopener noreferrer" class="btn-secondary inline-flex items-center justify-center">
+                                <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 0C4.477 0 0 4.484 0 10.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0110 4.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.203 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.942.359.31.678.921.678 1.856 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0020 10.017C20 4.484 15.522 0 10 0z" clip-rule="evenodd"></path>
+                                </svg>
+                                {{ 'projects.view_code'|trans }}
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Images Carousel -->
+    <div class="container-custom mt-16">
+        <div class="max-w-6xl mx-auto">
+            <div class="swiper project-detail-swiper rounded-xl overflow-hidden shadow-2xl">
+                <div class="swiper-wrapper">
+                    {% for image in project.images %}
+                        <div class="swiper-slide">
+                            <div class="project-carousel-image">
+                                <img src="{{ image.imagePath }}" 
+                                     alt="{{ image.alt ?: project.getLocalizedTitle(app.request.locale) }}"
+                                     class="project-carousel-img">
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+                
+                <!-- Navigation -->
+                {% if project.images|length > 1 %}
+                    <div class="swiper-button-next"></div>
+                    <div class="swiper-button-prev"></div>
+                    <div class="swiper-pagination"></div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Navigation CTA -->
+<section class="section-padding bg-gray-50 dark:bg-dark-900">
+    <div class="container-custom">
+        <div class="max-w-4xl mx-auto text-center space-y-8">
+            <h2 class="text-3xl font-bold text-gradient">
+                {% if app.request.locale == 'en' %}Explore More Projects{% else %}Découvrir Plus de Projets{% endif %}
+            </h2>
+            <p class="text-lg text-gray-600 dark:text-gray-300">
+                {% if app.request.locale == 'en' %}
+                    Check out my other projects and see what I've been working on.
+                {% else %}
+                    Découvrez mes autres projets et voyez sur quoi j'ai travaillé.
+                {% endif %}
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="{{ path('app_projects') }}" class="btn-primary inline-flex items-center justify-center">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                    </svg>
+                    {% if app.request.locale == 'en' %}All Projects{% else %}Tous les Projets{% endif %}
+                </a>
+                <a href="{{ path('app_home') }}#contact" class="btn-secondary inline-flex items-center justify-center">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                    </svg>
+                    {{ 'contact.title'|trans }}
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    
+    <!-- Swiper CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    
+    <!-- Swiper JS -->
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    
+    <style>
+        .project-detail-swiper {
+            height: 500px;
+        }
+        
+        .project-detail-swiper .swiper-slide {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .project-detail-swiper .swiper-button-next,
+        .project-detail-swiper .swiper-button-prev {
+            color: white;
+            background: rgba(0, 0, 0, 0.6);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            margin-top: -25px;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(4px);
+        }
+        
+        .project-detail-swiper .swiper-button-next:hover,
+        .project-detail-swiper .swiper-button-prev:hover {
+            background: rgba(0, 0, 0, 0.8);
+            transform: scale(1.1);
+        }
+        
+        .project-detail-swiper .swiper-button-next::after,
+        .project-detail-swiper .swiper-button-prev::after {
+            font-size: 20px;
+            font-weight: bold;
+        }
+        
+        .project-detail-swiper .swiper-pagination {
+            bottom: 20px !important;
+        }
+        
+        .project-detail-swiper .swiper-pagination-bullet {
+            background: rgba(255, 255, 255, 0.6);
+            opacity: 1;
+            width: 14px;
+            height: 14px;
+            transition: all 0.3s ease;
+        }
+        
+        .project-detail-swiper .swiper-pagination-bullet:hover {
+            background: rgba(255, 255, 255, 0.8);
+            transform: scale(1.2);
+        }
+        
+        .project-detail-swiper .swiper-pagination-bullet-active {
+            background: white;
+            transform: scale(1.3);
+        }
+
+        @media (max-width: 768px) {
+            .project-detail-swiper {
+                height: 300px;
+            }
+        }
+    </style>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize Swiper for project detail
+            const projectDetailSwiper = new Swiper('.project-detail-swiper', {
+                // Navigation arrows
+                navigation: {
+                    nextEl: '.swiper-button-next',
+                    prevEl: '.swiper-button-prev',
+                },
+                
+                // Pagination
+                pagination: {
+                    el: '.swiper-pagination',
+                    clickable: true,
+                },
+                
+                // Enable keyboard control
+                keyboard: {
+                    enabled: true,
+                },
+                
+                // Enable mouse wheel control
+                mousewheel: {
+                    enabled: true,
+                },
+                
+                // Touch/swipe settings
+                touchRatio: 1,
+                touchAngle: 45,
+                grabCursor: true,
+                
+                // Loop if more than one image
+                loop: {{ project.images|length > 1 ? 'true' : 'false' }},
+                
+                // Effects
+                effect: 'slide',
+                speed: 400,
+                
+                // Autoplay (optional)
+                autoplay: {
+                    delay: 5000,
+                    disableOnInteraction: false,
+                    pauseOnMouseEnter: true,
+                },
+                
+                // Responsive breakpoints
+                breakpoints: {
+                    640: {
+                        slidesPerView: 1,
+                    },
+                    768: {
+                        slidesPerView: 1,
+                    },
+                    1024: {
+                        slidesPerView: 1,
+                    }
+                }
+            });
+        });
+    </script>
+{% endblock %}

@@ -64,6 +64,20 @@ class HomeController extends AbstractController
         ]);
     }
 
+    #[Route('/{_locale}/project/{id}', name: 'app_project_detail', requirements: ['_locale' => 'fr|en', 'id' => '\d+'], defaults: ['_locale' => 'fr'])]
+    public function projectDetail(int $id, ProjectRepository $projectRepository): Response
+    {
+        $project = $projectRepository->findOneWithImages($id);
+
+        if (!$project || !$project->isPublished()) {
+            throw $this->createNotFoundException('Project not found');
+        }
+
+        return $this->render('project/detail.html.twig', [
+            'project' => $project,
+        ]);
+    }
+
     #[Route('/api/project/{id}', name: 'api_project_detail', methods: ['GET'])]
     public function getProjectDetail(int $id, Request $request, ProjectRepository $projectRepository): JsonResponse
     {

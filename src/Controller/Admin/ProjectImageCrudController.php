@@ -16,9 +16,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Field;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-use EasyCorp\Bundle\EasyAdminBundle\Event\BeforeEntityPersistedEvent;
-use EasyCorp\Bundle\EasyAdminBundle\Event\AfterEntityPersistedEvent;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 #[IsGranted('ROLE_ADMIN')]
 class ProjectImageCrudController extends AbstractCrudController
@@ -28,24 +25,6 @@ class ProjectImageCrudController extends AbstractCrudController
         return ProjectImage::class;
     }
 
-    public function persistEntity($entityManager, $entityInstance): void
-    {
-        // Debug avant sauvegarde
-        if ($entityInstance instanceof ProjectImage) {
-            error_log("EasyAdmin: Tentative de sauvegarde ProjectImage");
-            error_log("Filename: " . ($entityInstance->getFilename() ?? 'NULL'));
-            error_log("Project: " . ($entityInstance->getProject()?->getId() ?? 'NULL'));
-            
-            // Vérifier si le fichier existe
-            if ($entityInstance->getFilename()) {
-                $filePath = __DIR__ . '/../../../public/images/projects/' . $entityInstance->getFilename();
-                error_log("Fichier existe: " . (file_exists($filePath) ? 'OUI' : 'NON'));
-                error_log("Chemin: " . $filePath);
-            }
-        }
-        
-        parent::persistEntity($entityManager, $entityInstance);
-    }
 
     public function configureFields(string $pageName): iterable
     {

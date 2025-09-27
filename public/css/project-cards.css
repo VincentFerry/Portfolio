@@ -1,0 +1,208 @@
+/* ===================================
+   PROJECT CARDS - IMAGE HANDLING
+   ===================================
+   Solution pour gérer les images de dimensions variables
+   dans les cards tout en maintenant la cohérence visuelle
+*/
+
+/* Conteneur de l'image avec hauteur fixe */
+.project-image {
+    height: 200px; /* Hauteur fixe pour uniformiser toutes les cards */
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Mode sombre */
+.dark .project-image {
+    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+}
+
+/* Image avec proportions conservées */
+.project-image-img {
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    object-position: center;
+    display: block;
+    transition: transform 0.3s ease;
+}
+
+/* Responsive - Tablettes */
+@media (max-width: 1024px) {
+    .project-image {
+        height: 180px;
+    }
+}
+
+/* Responsive - Mobiles */
+@media (max-width: 640px) {
+    .project-image {
+        height: 160px;
+    }
+}
+
+/* Fallback pour navigateurs anciens (sans object-fit) */
+@supports not (object-fit: contain) {
+    .project-image-img {
+        /* Fallback avec background-image pour les navigateurs anciens */
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        max-width: 90%;
+        max-height: 90%;
+    }
+}
+
+/* Animation hover améliorée */
+.group:hover .project-image-img {
+    transform: scale(1.05);
+}
+
+/* États de chargement */
+.project-image-img[src=""],
+.project-image-img:not([src]) {
+    display: none;
+}
+
+/* Placeholder pour images manquantes */
+.project-image:has(.project-image-img[src=""]),
+.project-image:has(.project-image-img:not([src])) {
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+}
+
+.project-image:has(.project-image-img[src=""]):before,
+.project-image:has(.project-image-img:not([src])):before {
+    content: "📷";
+    font-size: 2rem;
+    color: white;
+    opacity: 0.7;
+}
+
+/* Performance - Optimisation GPU */
+.project-image-img {
+    will-change: transform;
+    backface-visibility: hidden;
+}
+
+/* Accessibilité */
+@media (prefers-reduced-motion: reduce) {
+    .project-image-img {
+        transition: none;
+    }
+    
+    .group:hover .project-image-img {
+        transform: none;
+    }
+}
+
+/* ===================================
+   PROJECT CAROUSEL - IMAGE HANDLING
+   ===================================
+   Solution pour le carrousel d'images dans la page de détail
+*/
+
+/* Conteneur du carrousel avec hauteur adaptative */
+.project-carousel-image {
+    width: 100%;
+    height: 60vh; /* 60% de la hauteur de viewport */
+    min-height: 400px;
+    max-height: 600px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Mode sombre pour le carrousel */
+.dark .project-carousel-image {
+    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+}
+
+/* Image du carrousel avec proportions conservées */
+.project-carousel-img {
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    object-position: center;
+    display: block;
+    border-radius: 8px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+/* Mode sombre - ombre adaptée */
+.dark .project-carousel-img {
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+}
+
+/* Responsive pour le carrousel - Tablettes */
+@media (max-width: 1024px) {
+    .project-carousel-image {
+        height: 50vh;
+        min-height: 300px;
+        max-height: 500px;
+    }
+}
+
+/* Responsive pour le carrousel - Mobiles */
+@media (max-width: 640px) {
+    .project-carousel-image {
+        height: 40vh;
+        min-height: 250px;
+        max-height: 400px;
+    }
+}
+
+/* Fallback pour navigateurs anciens (carrousel) */
+@supports not (object-fit: contain) {
+    .project-carousel-img {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        max-width: 95%;
+        max-height: 95%;
+    }
+}
+
+/* Performance - Optimisation GPU pour le carrousel */
+.project-carousel-img {
+    will-change: transform;
+    backface-visibility: hidden;
+}
+
+/* Accessibilité pour le carrousel */
+@media (prefers-reduced-motion: reduce) {
+    .project-carousel-img {
+        transition: none;
+    }
+}
+
+/* Debug mode (à supprimer en production) */
+.debug .project-image {
+    border: 2px solid red;
+}
+
+.debug .project-image-img {
+    border: 1px solid blue;
+}
+
+.debug .project-carousel-image {
+    border: 2px solid green;
+}
+
+.debug .project-carousel-img {
+    border: 1px solid orange;
+}

@@ -18,70 +18,12 @@
         </div>
     </div>
 </section>
-
-<!-- Projects Grid -->
 <section class="section-padding bg-white dark:bg-dark-800">
     <div class="container-custom">
         {% if projects|length > 0 %}
             <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {% for project in projects %}
-                    <div class="card overflow-hidden group hover:scale-105 transition-transform duration-300 animate-fade-in cursor-pointer" 
-                         onclick="openProjectModal({{ project.id }})">
-                        <div class="relative overflow-hidden">
-                            {% set primaryImage = project.primaryImage %}
-                            {% if primaryImage %}
-                                <img src="{{ primaryImage.imagePath }}" 
-                                     alt="{{ primaryImage.alt ?: project.getLocalizedTitle(app.request.locale) }}"
-                                     class="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-300">
-                            {% else %}
-                                <div class="w-full h-48 bg-gradient-to-br from-primary-400 to-purple-400 flex items-center justify-center">
-                                    <svg class="w-16 h-16 text-white opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
-                                    </svg>
-                                </div>
-                            {% endif %}
-                            <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                                <svg class="w-8 h-8 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
-                                </svg>
-                            </div>
-                            {% if project.featured %}
-                                <div class="absolute top-4 right-4 bg-yellow-400 text-yellow-900 px-2 py-1 rounded-full text-xs font-medium">
-                                    ⭐ Featured
-                                </div>
-                            {% endif %}
-                        </div>
-                        <div class="p-6">
-                            <h3 class="text-xl font-bold mb-2 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">{{ project.getLocalizedTitle(app.request.locale) }}</h3>
-                            <p class="text-gray-600 dark:text-gray-300 mb-4 line-clamp-3">
-                                {% set description = project.getLocalizedDescription(app.request.locale) %}
-                                {{ description|slice(0, 150) }}{% if description|length > 150 %}...{% endif %}
-                            </p>
-                            <div class="flex flex-wrap gap-2 mb-4">
-                                {% for tech in project.technologies|slice(0, 4) %}
-                                    <span class="px-2 py-1 bg-gray-100 dark:bg-dark-700 text-xs rounded-full">{{ tech }}</span>
-                                {% endfor %}
-                                {% if project.technologies|length > 4 %}
-                                    <span class="px-2 py-1 bg-gray-200 dark:bg-gray-600 text-gray-600 dark:text-gray-300 text-xs rounded-full">
-                                        +{{ project.technologies|length - 4 }}
-                                    </span>
-                                {% endif %}
-                            </div>
-                            <div class="flex gap-4">
-                                {% if project.demoUrl %}
-                                    <a href="{{ project.demoUrl }}" target="_blank" class="flex-1 btn-primary text-center text-sm" onclick="event.stopPropagation()">
-                                        {{ 'projects.view_demo'|trans }}
-                                    </a>
-                                {% endif %}
-                                {% if project.githubUrl %}
-                                    <a href="{{ project.githubUrl }}" target="_blank" class="flex-1 btn-secondary text-center text-sm" onclick="event.stopPropagation()">
-                                        {{ 'projects.view_code'|trans }}
-                                    </a>
-                                {% endif %}
-                            </div>
-                        </div>
-                    </div>
+                    {{ include('components/project_card.html.twig', {project: project, showMoreTech: true}) }}
                 {% endfor %}
             </div>
         {% else %}
@@ -143,10 +85,4 @@
     </div>
 </section>
 
-{{ include('components/project_modal.html.twig') }}
-{% endblock %}
-
-{% block javascripts %}
-    {{ parent() }}
-    {{ include('components/project_modal_js.html.twig') }}
 {% endblock %}
