@@ -1,33 +1,10 @@
-# Configuration pour les uploads d'images
-php_value upload_max_filesize 3M
-php_value post_max_size 3M
-php_value max_execution_time 60
-php_value max_input_time 60
-php_value memory_limit 128M
+# Désactiver MultiViews pour éviter les erreurs AH00690
+Options -MultiViews
 
 # Sécurité - Empêcher l'exécution de scripts dans le dossier uploads
-<Directory "public/images/projects">
-    <Files "*.php">
-        Order Deny,Allow
-        Deny from all
-    </Files>
-    <Files "*.phtml">
-        Order Deny,Allow
-        Deny from all
-    </Files>
-    <Files "*.php3">
-        Order Deny,Allow
-        Deny from all
-    </Files>
-    <Files "*.php4">
-        Order Deny,Allow
-        Deny from all
-    </Files>
-    <Files "*.php5">
-        Order Deny,Allow
-        Deny from all
-    </Files>
-</Directory>
+<FilesMatch "^images/projects/.*\.(php|phtml|php3|php4|php5)$">
+    Require all denied
+</FilesMatch>
 
 # Optimisation des images - Headers de cache
 <IfModule mod_expires.c>
@@ -45,3 +22,8 @@ php_value memory_limit 128M
         SetOutputFilter DEFLATE
     </FilesMatch>
 </IfModule>
+
+# Bloquer l'accès aux fichiers sensibles à la racine
+<FilesMatch "\.(env|htaccess|htpasswd|ini|log|sql|sh|bak|swp|DS_Store)$">
+    Require all denied
+</FilesMatch>
