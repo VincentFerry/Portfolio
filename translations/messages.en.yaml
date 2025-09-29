@@ -12,12 +12,12 @@ header:
 
 hero:
   title: "Vincent Ferry"
-  subtitle: "Full Stack Developer<br>Robust solutions for companies and startups"
+  subtitle: "• Full Stack Developer<br>• Robust solutions for companies and startups"
   cta: "Discover my work"
 
 about:
   title: "About me"
-  description: "Full Stack Developer with over 5 years of professional experience across 3 different companies.<br>Expert in PHP/Symfony, Laravel and Node.js, I design robust and scalable web solutions.<br>From real estate to IT services, I've delivered complex projects while mastering business and technical constraints."
+  description: "Full Stack Developer with over 5 years of professional experience across 3 different companies.<br>Specialized in PHP/Symfony, Laravel and Node.js, I design robust and scalable web solutions.<br>From real estate to IT services, I've delivered complex projects while mastering business and technical constraints."
 
 skills:
   title: "My skills"
