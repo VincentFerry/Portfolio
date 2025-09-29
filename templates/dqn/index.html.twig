@@ -1,0 +1,284 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}DQN Grid World - {{ parent() }}{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<style>
+  .dqn-container {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    padding: 2rem 0;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(5, 50px);
+    grid-template-rows: repeat(5, 50px);
+    gap: 5px;
+    margin: 20px auto;
+    width: 280px;
+    height: 280px;
+  }
+  .cell {
+    width: 50px;
+    height: 50px;
+    background-color: lightgray;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .agent {
+    background-color: blue;
+  }
+  .goal {
+    background-color: green;
+  }
+  .obstacle {
+    background-color: red;
+  }
+  .dqn-controls {
+    margin: 20px 0;
+  }
+  .dqn-controls button {
+    margin: 0 10px;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  .dqn-controls button:hover {
+    background-color: #0056b3;
+  }
+  .speed-control {
+    margin: 20px 0;
+  }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="dqn-container">
+  <h1 class="text-4xl font-bold text-gradient mb-8">DQN Grid World</h1>
+  
+  <div id="grid" class="grid"></div>
+  
+  <div class="dqn-controls">
+    <button onclick="startTraining()">Start Training</button>
+    <button onclick="saveModel()">Save Model</button>
+    <button onclick="loadModel()">Load Model</button>
+  </div>
+  
+  <p id="status" class="text-lg mb-4">Training not started yet</p>
+
+  <div class="speed-control">
+    <label for="speed">Training Speed:</label>
+    <input type="range" id="speed" min="1" max="1000" value="100" step="1">
+    <span id="speedValue">100ms</span>
+  </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.6.0"></script>
+  <script>
+    // Attendre que le DOM soit chargé
+    document.addEventListener('DOMContentLoaded', function() {
+      const gridSize = 5;
+      const actions = ['up', 'down', 'left', 'right'];
+      const epsilon = 0.1;
+      const alpha = 0.1;
+      const gamma = 0.9;
+
+      let qModel;
+      let targetModel;
+      let replayBuffer = [];
+      const maxBufferSize = 5000;
+      const batchSize = 32;
+      const targetUpdateFrequency = 10;
+      let stepCount = 0;
+
+      let agentPosition = [0, 0];
+      let goalPosition = [4, 4];
+      let obstacles = [[2, 2], [1,3], [3,1]];
+      
+      // Récupérer les éléments DOM après chargement
+      const speedSlider = document.getElementById('speed');
+      const speedValue = document.getElementById('speedValue');
+      const gridElement = document.getElementById('grid');
+      const statusElement = document.getElementById('status');
+
+      // Met à jour la vitesse en fonction du slider
+      speedSlider.addEventListener('input', () => {
+          speedValue.textContent = `${speedSlider.value}ms`;
+      });
+
+    function initializeModel() {
+      qModel = tf.sequential();
+      qModel.add(tf.layers.dense({ units: 24, inputShape: [2], activation: 'relu' }));
+      qModel.add(tf.layers.dense({ units: 24, activation: 'relu' }));
+      qModel.add(tf.layers.dense({ units: 4, activation: 'linear' }));
+      qModel.compile({ optimizer: tf.train.adam(0.01), loss: 'meanSquaredError' });
+
+      targetModel = tf.sequential();
+      targetModel.add(tf.layers.dense({ units: 24, inputShape: [2], activation: 'relu' }));
+      targetModel.add(tf.layers.dense({ units: 24, activation: 'relu' }));
+      targetModel.add(tf.layers.dense({ units: 4, activation: 'linear' }));
+      targetModel.setWeights(qModel.getWeights());
+    }
+
+    function displayGrid() {
+      gridElement.innerHTML = '';
+      for (let x = 0; x < gridSize; x++) {
+        for (let y = 0; y < gridSize; y++) {
+          const cell = document.createElement('div');
+          cell.classList.add('cell');
+          if (x === agentPosition[0] && y === agentPosition[1]) cell.classList.add('agent');
+          if (x === goalPosition[0] && y === goalPosition[1]) cell.classList.add('goal');
+          if (obstacles.some(o => o[0] === x && o[1] === y)) cell.classList.add('obstacle');
+          gridElement.appendChild(cell);
+        }
+      }
+    }
+
+    function distanceToGoal(x, y) {
+      return Math.abs(goalPosition[0] - x) + Math.abs(goalPosition[1] - y);
+    }
+
+    function getReward(newX, newY, prevX, prevY) {
+      if (newX < 0 || newX >= gridSize || newY < 0 || newY >= gridSize) return -10;
+      if (obstacles.some(([ox, oy]) => ox === newX && oy === newY)) return -5;
+      if (newX === goalPosition[0] && newY === goalPosition[1]) return 100;
+      return (distanceToGoal(prevX, prevY) - distanceToGoal(newX, newY)) * 2;
+    }
+
+    function chooseAction(x, y) {
+      if (Math.random() < epsilon) {
+        const possible = getPossibleActions(x, y);
+        return possible[Math.floor(Math.random() * possible.length)];
+      }
+      const state = tf.tensor2d([[x, y]]);
+      const q = qModel.predict(state).arraySync()[0];
+      return actions[q.indexOf(Math.max(...q))];
+    }
+
+    function getPossibleActions(x, y) {
+      const a = [];
+      if (x > 0) a.push('up');
+      if (x < gridSize - 1) a.push('down');
+      if (y > 0) a.push('left');
+      if (y < gridSize - 1) a.push('right');
+      return a;
+    }
+
+    function getNextPosition(x, y, action) {
+        let newX = x;
+        let newY = y;
+        switch (action) {
+            case 'up': newX--; break;
+            case 'down': newX++; break;
+            case 'left': newY--; break;
+            case 'right': newY++; break;
+        }
+
+        // Bloquer les mouvements hors de la grille
+        if (newX < 0 || newX >= gridSize || newY < 0 || newY >= gridSize) {
+            return [x, y]; // Reste sur place
+        }
+
+        // Bloquer les obstacles
+        if (obstacles.some(o => o[0] === newX && o[1] === newY)) {
+            return [x, y]; // Reste sur place
+        }
+
+        return [newX, newY];
+    }
+
+    async function updateQModel(x, y, action, reward, nextX, nextY) {
+      replayBuffer.push({ state: [x, y], action, reward, nextState: [nextX, nextY] });
+      if (replayBuffer.length > maxBufferSize) replayBuffer.shift();
+
+      if (replayBuffer.length >= batchSize) await replayAndTrain();
+      stepCount++;
+      if (stepCount % targetUpdateFrequency === 0) targetModel.setWeights(qModel.getWeights());
+    }
+
+    async function replayAndTrain() {
+      const batch = [];
+      for (let i = 0; i < batchSize; i++) batch.push(replayBuffer[Math.floor(Math.random() * replayBuffer.length)]);
+
+      const states = tf.tensor2d(batch.map(e => e.state));
+      const nextStates = tf.tensor2d(batch.map(e => e.nextState));
+      const qValues = await qModel.predict(states).array();
+      const nextQValues = await targetModel.predict(nextStates).array();
+
+      batch.forEach((e, i) => {
+        const aIdx = actions.indexOf(e.action);
+        qValues[i][aIdx] = e.reward + gamma * Math.max(...nextQValues[i]);
+      });
+
+      await qModel.fit(states, tf.tensor2d(qValues), { epochs: 1 });
+      tf.dispose([states, nextStates]);
+    }
+
+    async function trainAgent(epochs) {
+      let epoch = 0;
+      function trainEpoch() {
+        if (epoch >= epochs) return statusElement.innerText = 'Training complete!';
+        agentPosition = [0, 0];
+        let steps = 0, totalReward = 0;
+        async function trainStep() {
+          if (agentPosition[0] === goalPosition[0] && agentPosition[1] === goalPosition[1]) {
+            epoch++;
+            statusElement.innerText = `Epoch ${epoch}: Reward ${totalReward}`;
+            return setTimeout(trainEpoch, 0);
+          }
+          const action = chooseAction(...agentPosition);
+          const [nextX, nextY] = getNextPosition(...agentPosition, action);
+          const reward = getReward(nextX, nextY, ...agentPosition);
+          await updateQModel(...agentPosition, action, reward, nextX, nextY);
+          agentPosition = [nextX, nextY];
+          totalReward += reward;
+          displayGrid();
+          steps++;
+            // Diminuer la durée du délai en fonction de la vitesse choisie via le slider
+            const delay = 1000 - parseInt(speedSlider.value); // Le délai est inversément proportionnel à la vitesse (plus la valeur est basse, plus c'est rapide)
+            setTimeout(trainStep, delay); // Délai pour passer à l'étape suivante
+        }
+        trainStep();
+      }
+      trainEpoch();
+    }
+
+    function startTraining() {
+      initializeModel();
+      displayGrid();
+      trainAgent(200);
+    }
+
+    async function saveModel() {
+      await qModel.save('localstorage://my-dqn-model');
+      console.log('Model saved.');
+    }
+
+    async function loadModel() {
+      try {
+        qModel = await tf.loadLayersModel('localstorage://my-dqn-model');
+        initializeModel();
+        targetModel.setWeights(qModel.getWeights());
+        console.log('Model loaded.');
+      } catch (e) {
+        console.log('No saved model.');
+        initializeModel();
+      }
+    }
+    
+    // Exposer les fonctions globalement pour les onclick
+    window.startTraining = startTraining;
+    window.saveModel = saveModel;
+    window.loadModel = loadModel;
+    
+    }); // Fin du DOMContentLoaded
+  </script>
+{% endblock %}
