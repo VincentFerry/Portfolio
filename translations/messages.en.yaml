@@ -11,13 +11,13 @@ header:
   language: "Language"
 
 hero:
-  title: "Vincent Ferry"
-  subtitle: "• Full Stack Developer<br>• Robust solutions for companies and startups"
+  title: "Vincent Ferry - PHP Developer"
+  subtitle: "• Full Stack Web Developer specialized in PHP/Symfony<br>• Robust solutions for companies and startups"
   cta: "Discover my work"
 
 about:
   title: "About me"
-  description: "Full Stack Developer with over 5 years of professional experience across 3 different companies.<br>Specialized in PHP/Symfony, Laravel and Node.js, I design robust and scalable web solutions.<br>From real estate to IT services, I've delivered complex projects while mastering business and technical constraints."
+  description: "Vincent Ferry, full stack web developer with over 7 years of professional experience across 3 different companies.<br>Specialized in <strong>PHP/Symfony</strong>, Laravel and Node.js, I design robust and scalable web solutions.<br>Based in Jouars-Pontchartrain (78), I've delivered complex projects while mastering business and technical constraints."
 
 skills:
   title: "My skills"

@@ -2,26 +2,31 @@
 <html lang="{{ app.request.locale }}" class="scroll-smooth dark">
     <head>
         <meta charset="UTF-8">
-        <title>{% block title %}{{ 'header.name'|trans }} - {{ 'header.role'|trans }}{% endblock %}</title>
+        <title>{% block title %}Vincent Ferry - Développeur PHP Symfony | Développeur Web Full Stack{% endblock %}</title>
         <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text></svg>">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="description" content="{% block meta_description %}{{ 'about.description'|trans }}{% endblock %}">
-        <meta name="keywords" content="{% block meta_keywords %}développeur, full stack, web, symfony, javascript, php{% endblock %}">
-        <meta name="author" content="{{ 'header.name'|trans }}">
+        <meta name="description" content="{% block meta_description %}Vincent Ferry, développeur PHP Symfony expérimenté. Spécialiste développement web full stack, solutions robustes avec PHP, Symfony, Laravel. Basé à Jouars-Pontchartrain (78).{% endblock %}">
+        <meta name="keywords" content="{% block meta_keywords %}Vincent Ferry, développeur, PHP, Symfony, web, full stack, Laravel, développeur web, Jouars-Pontchartrain, Yvelines{% endblock %}">
+        <meta name="author" content="Vincent Ferry">
+        <meta name="robots" content="index, follow">
+        <link rel="canonical" href="{% block canonical %}{{ app.request.uri }}{% endblock %}">
         
         <!-- Open Graph / Facebook -->
         <meta property="og:type" content="website">
         <meta property="og:url" content="{{ app.request.uri }}">
-        <meta property="og:title" content="{% block og_title %}{{ 'header.name'|trans }} - {{ 'header.role'|trans }}{% endblock %}">
-        <meta property="og:description" content="{% block og_description %}{{ 'about.description'|trans }}{% endblock %}">
+        <meta property="og:title" content="{% block og_title %}Vincent Ferry - Développeur PHP Symfony | Développeur Web{% endblock %}">
+        <meta property="og:description" content="{% block og_description %}Vincent Ferry, développeur PHP Symfony expérimenté. Spécialiste développement web full stack avec PHP, Symfony, Laravel.{% endblock %}">
         <meta property="og:image" content="{% block og_image %}{{ absolute_url(asset('images/VincentFerry.png')) }}{% endblock %}">
 
         <!-- Twitter -->
         <meta property="twitter:card" content="summary_large_image">
         <meta property="twitter:url" content="{{ app.request.uri }}">
-        <meta property="twitter:title" content="{% block twitter_title %}{{ 'header.name'|trans }} - {{ 'header.role'|trans }}{% endblock %}">
-        <meta property="twitter:description" content="{% block twitter_description %}{{ 'about.description'|trans }}{% endblock %}">
+        <meta property="twitter:title" content="{% block twitter_title %}Vincent Ferry - Développeur PHP Symfony | Développeur Web{% endblock %}">
+        <meta property="twitter:description" content="{% block twitter_description %}Vincent Ferry, développeur PHP Symfony expérimenté. Spécialiste développement web full stack.{% endblock %}">
         <meta property="twitter:image" content="{% block twitter_image %}{{ absolute_url(asset('images/VincentFerry.png')) }}{% endblock %}">
+        
+        <!-- Données structurées JSON-LD -->
+        {{ include('components/structured_data.html.twig') }}
         
         {% block stylesheets %}
             {{ encore_entry_link_tags('app') }}
